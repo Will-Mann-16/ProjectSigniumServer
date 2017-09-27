@@ -1,0 +1,17 @@
+{
+  "name": "ProjectSigniumServer",
+  "version": "0.0.1",
+  "main": "src/server/server.js",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.2",
+    "express": "^4.15.4",
+    "jsonwebtoken": "^8.0.1",
+    "mongoose": "^4.11.12",
+    "node": "^8.3.0",
+    "socket.io": "^2.0.3"
+  },
+  "scripts": {
+    "start": "node src/server/server"
+  }
+}
