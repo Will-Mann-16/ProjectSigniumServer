@@ -383,7 +383,7 @@ module.exports.appReadStudent = function(id, minor, callback){
     }
 }
 module.exports.appUpdateStudentLocation = function(studentID, locationID, callback){
-  Location.findOne(locationID, function(err1, location){
+  Location.findOne({_id: locationID}, function(err1, location){
     if(err1) {
         callback({success: false, reason: err1.message});
     } else {
@@ -391,11 +391,15 @@ module.exports.appUpdateStudentLocation = function(studentID, locationID, callba
             id: location._id,
             name: location.name,
             colour: location.colour
-        }}, function(err2, student){
+        },
+            timelastout: new Date()
+    }, {new: true}, function(err2, student){
             if(err2){
                 callback({success: false, reason: err2.message});
             }
             else{
+                console.log(student);
+
                 callback({success: true, student: student});
             }
         });

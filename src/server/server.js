@@ -69,15 +69,13 @@ io.on("connect", function(socket) {
       });
   });
   socket.on("socket-client-server-app-read-locations", function (packet) {
-      console.log(packet);
       crud.readLocations(packet.house, function (response) {
-          console.log(response);
-          socket.emit("socket-server-client-read-locations", response);
+          socket.emit("socket-server-client-app-read-locations", response);
       });
   });
   socket.on("socket-client-server-app-update-location", function(packet){
      crud.appUpdateStudentLocation(packet.studentID, packet.locationID, function(response){
-         socket.emit("socket-server-client-update-location", response);
+         socket.emit("socket-server-client-app-update-location", response);
      }) ;
   });
 });
