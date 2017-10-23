@@ -112,7 +112,7 @@ locationRoutes.get("/delete", function(req, res) {
 });
 
 houseRoutes.post("/create", function(req, res) {
-    crud.createHouse(house, function(response){
+    crud.createHouse(req.body.params.house, function(response){
         res.json(response);
     });
 });
