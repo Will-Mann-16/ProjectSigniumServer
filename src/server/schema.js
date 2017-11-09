@@ -36,7 +36,7 @@ var userSchema = mongoose.Schema({
     },
     password: String,
     role: String,
-    _house: String,
+    house: String,
     firstname: String,
     surname: String
 }, {

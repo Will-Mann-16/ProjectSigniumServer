@@ -6,10 +6,10 @@ var server = http.createServer(app);
 var io = require('socket.io')(server);
 
 //var uri = 'mongodb://127.0.0.1:27017';
-//var uri = 'mongodb://127.0.0.1:27017/project-signium'
+var uri = 'mongodb://127.0.0.1:27017/project-signium'
 //var uri = 'mongodb://ridge-mongodb:jL74RbgxKAcBoQx8xChqtcQmUkR0ecixULdp8sfH4xpdkU4TXAkpyjk3DxqHDmE3Iby6HhaCCOOH5grAWFIQmw==@ridge-mongodb.documents.azure.com:10255/ridge-wellington?ssl=true&sslverifycertificate=false';
 
-var uri = 'mongodb://RIDGE:C0d1ngG33k@ridgewelly-shard-00-00-lamqk.mongodb.net:27017,ridgewelly-shard-00-01-lamqk.mongodb.net:27017,ridgewelly-shard-00-02-lamqk.mongodb.net:27017/test?ssl=true&replicaSet=RIDGEWelly-shard-0&authSource=admin'
+//var uri = 'mongodb://RIDGE:C0d1ngG33k@ridgewelly-shard-00-00-lamqk.mongodb.net:27017,ridgewelly-shard-00-01-lamqk.mongodb.net:27017,ridgewelly-shard-00-02-lamqk.mongodb.net:27017/test?ssl=true&replicaSet=RIDGEWelly-shard-0&authSource=admin'
 
 var mongoose = require("mongoose");
 mongoose.connect(uri);
@@ -78,7 +78,7 @@ io.on("connect", function(socket) {
   socket.on("socket-client-server-app-update-location", function(packet){
      crud.appUpdateStudentLocation(packet.studentID, packet.locationID, function(response){
          socket.emit("socket-server-client-app-update-location", response);
-     }) ;
+     }, crud.createHistory) ;
   });
 });
 

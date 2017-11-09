@@ -15,7 +15,7 @@ userRoutes.post("/create", function(req, res) {
         username: req.body.params.user.username.toLowerCase(),
         password: req.body.params.user.password,
         role: req.body.params.user.role,
-        _house: req.body.params.user._house,
+        house: req.body.params.user.house,
         firstname: req.body.params.user.firstname,
         surname: req.body.params.user.surname
     }

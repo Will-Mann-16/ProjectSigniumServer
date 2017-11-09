@@ -18,14 +18,8 @@ module.exports.createUser = function(user, callback){
     }
     else{
       user.password = hash;
-      User.create({
-        username: user.username,
-        password: user.password,
-        firstname: user.firstname,
-        surname: user.surname,
-        role: user.role,
-        house: user._house
-      }, function(error, nUser) {
+      console.log(user);
+      User.create(user, function(error, nUser) {
         if (error) {
           callback({success: false, reason: error.message});
         } else {
@@ -60,7 +54,9 @@ module.exports.updateUser = function(id, user, callback){
           if (err) {
             callback({success: false, reason: err.message});
           } else {
-            callback({success: true});
+            callback({success: true, token: jwt.sign({
+                  data: user
+              }, secretKey)});
           }
         });
       }
@@ -71,7 +67,9 @@ module.exports.updateUser = function(id, user, callback){
       if (err) {
         callback({success: false, reason: err.message});
       } else {
-        callback({success: true});
+        callback({success: true, token: jwt.sign({
+            data: user
+        }, secretKey)});
       }
     });
   }
@@ -114,7 +112,7 @@ module.exports.authenticateUser = function(username, password, callback){
             }
           });
 
-        } else if (!success) {
+        } else if (success && !result) {
           callback({success: true, authenticated: false});
         }
       });
@@ -382,13 +380,13 @@ module.exports.appReadStudent = function(id, minor, callback){
         });
     }
 }
-module.exports.appUpdateStudentLocation = function(studentID, locationID, callback){
+module.exports.appUpdateStudentLocation = function(studentID, locationID, callback, createHistory){
   Location.findOne({_id: locationID}, function(err1, location){
     if(err1) {
         callback({success: false, reason: err1.message});
     } else {
         Student.findByIdAndUpdate(studentID, {location: {
-            id: location._id,
+            id: locationID,
             name: location.name,
             colour: location.colour
         },
@@ -398,7 +396,18 @@ module.exports.appUpdateStudentLocation = function(studentID, locationID, callba
                 callback({success: false, reason: err2.message});
             }
             else{
-                console.log(student);
+                createHistory({student:{
+                    _id: studentID,
+                    firstname: student.firstname,
+                    surname: student.surname,
+                    yeargroup: student.yeargroup
+                },
+                    location: {
+                        _id: locationID,
+                        name: location.name
+                    },
+                    _house: student._house,
+                    time: new Date()}, function(){});
 
                 callback({success: true, student: student});
             }
