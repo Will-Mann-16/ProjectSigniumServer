@@ -43,10 +43,12 @@ var userSchema = mongoose.Schema({
     runSettersOnQuery: true
 });
 
+
 var houseSchema = mongoose.Schema({
     name: String,
     colours: [String],
-    personell: [String]
+    personell: [String],
+    config: Object
 });
 
 var historySchema = mongoose.Schema({
@@ -61,20 +63,31 @@ var historySchema = mongoose.Schema({
       name: String
     },
     _house: String,
-    time: Date
+    time: {type: Date, default: Date.now}
 });
 //historySchema.index({"student.firstname": "text", "student.surname": "text", "student.yeargroup": "text", "location.name": "text"});
+
+var calloverSchema = mongoose.Schema({
+    time: {type: Date, default: Date.now},
+    students: [{
+        _id: String,
+        present: Boolean
+    }],
+    _house: String
+});
 
 var Student = mongoose.model("Student", studentSchema);
 var Location = mongoose.model("Location", locationSchema);
 var User = mongoose.model("User", userSchema);
 var House = mongoose.model("Houselist", houseSchema, 'houselist');
 var History = mongoose.model("History", historySchema, 'history');
+var Callover = mongoose.model("Callover", calloverSchema, 'callover');
 
 module.exports = {
     student: Student,
     location: Location,
     user: User,
     house: House,
-    history: History
+    history: History,
+    callover: Callover
 };

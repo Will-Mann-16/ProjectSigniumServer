@@ -9,6 +9,7 @@ var userRoutes = express.Router();
 var locationRoutes = express.Router();
 var houseRoutes = express.Router();
 var historyRoutes = express.Router();
+var calloverRoutes = express.Router();
 
 userRoutes.post("/create", function(req, res) {
     var user = {
@@ -131,6 +132,11 @@ houseRoutes.get("/delete", function(req, res) {
         res.json(response);
     });
 });
+houseRoutes.post("/update-config", function(req, res){
+   crud.updateHouseConfig(req.body.params.house, req.body.params.config, function(response){
+      res.json(response);
+   });
+});
 
 historyRoutes.get("/read", function(req, res){
     crud.readHistory(req.query.filter, req.query.amount, req.query.house, function(response){
@@ -138,11 +144,23 @@ historyRoutes.get("/read", function(req, res){
     });
 });
 
+calloverRoutes.post("/create", function(req,res){
+    crud.createCallover(req.body.params.callover, function(response){
+        res.json(response);
+    });
+})
+calloverRoutes.get("/read", function(req, res){
+   crud.readCallover(req.query.house, function(response){
+       res.json(response);
+   })
+});
+
 apiRoutes.use('/students', studentRoutes);
 apiRoutes.use('/users', userRoutes);
 apiRoutes.use('/locations', locationRoutes);
 apiRoutes.use('/houses', houseRoutes);
 apiRoutes.use('/history', historyRoutes);
+apiRoutes.use('/callover', calloverRoutes);
 
 module.exports = {
     routes: apiRoutes

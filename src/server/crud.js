@@ -9,6 +9,7 @@ var Student = schema.student;
 var Location = schema.location;
 var House = schema.house;
 var History = schema.history;
+var Callover = schema.callover;
 
 //User
 module.exports.createUser = function(user, callback){
@@ -496,6 +497,17 @@ module.exports.deleteHouse = function(id, callback){
   });
 }
 
+module.exports.updateHouseConfig = function(id, config, callback){
+            House.findByIdAndUpdate(id, {config: config}, function(err2, house1) {
+                if (err2) {
+                    callback({success: false, reason: err.message});
+                }
+                else {
+                    callback({success: true, house: house1});
+                }
+            });
+}
+
 //History
 module.exports.createHistory = function(history, callback){
   var newHistory = History.create(history, function(err) {
@@ -524,4 +536,25 @@ module.exports.readHistory = function(filter, amount, house, callback){
       callback({success: true, records: records});
     }
   })
+}
+
+
+module.exports.createCallover = function(callover, callback){
+    var newCallover = Callover.create(callover, function(err, callover1){
+       if(err){
+           callback({success: false, reason: err.message});
+       } else{
+           callback({success: true, callover: callover1})
+       }
+    });
+}
+
+module.exports.readCallover = function(house, callback){
+    Callover.find({_house: house}, function(err, callovers){
+       if(err){
+           callback({success: false, reason: err.message});
+       } else{
+           callback({success: true, callovers: callovers});
+       }
+    });
 }
