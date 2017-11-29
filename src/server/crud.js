@@ -225,89 +225,109 @@ module.exports.deleteStudent = function(id, callback){
 }
 module.exports.uploadStudents = function(json, house, callback){
   var success = true;
-  var defaultLocation = {
-    id: "",
-    colour: "#ffffff",
-    name: "No Location"
-  }
-  json.forEach(function(student){
-    Student.find({code: student.Code}, function(err, docs){
-      if(!docs.length){
-        if(student.Password !== ""){
-          bcrypt.hash(student.Password, saltRounds, function(err1, hash) {
-            if(err && success){
-              callback({success: false, reason: err1});
-              success = false;
-            }
-            else{
-              var newStudent = Student.create({
-                firstname: student.Firstname,
-                surname: student.Surname,
-                yeargroup: student.Yeargroup,
-                code: student.Code,
-                _house: house,
-                password: hash,
-                location: defaultLocation,
-                timelastout: new Date()}, function(err2, nStudent){
-                  if(err && success){
-                    callback({success: false, reason: err2});
-                    success = false;
-                  }
-                });
-              }
-          });
-        }else{
-          var newStudent = Student.create({
-            firstname: student.Firstname,
-            surname: student.Surname,
-            yeargroup: student.Yeargroup,
-            code: student.Code,
-            _house: house,
-            location: defaultLocation,
-            timelastout: new Date()}, function(err2, nStudent){
-              if(err && success){
-                callback({success: false, reason: err2});
-                success = false;
-              }
-            });
-        }
-      }else{
-        if(student.Password !== ""){
-          bcrypt.hash(student.Password, saltRounds, function(err1, hash) {
-            if(err && success){
-              callback({success: false, reason: err1});
-              success = false;
-            }
-            else{
-              var newStudent = Student.update({code: student.Code},{
-                firstname: student.Firstname,
-                surname: student.Surname,
-                yeargroup: student.Yeargroup,
-                code: student.Code,
-                _house: house,
-                password: hash}, function(err2, nStudent){
-                  if(err && success){
-                    callback({success: false, reason: err2});
-                    success = false;
-                  }
-                });
-              }
-          });
-        }else{
-          var newStudent = Student.update({code: student.Code}, {
-            firstname: student.Firstname,
-            surname: student.Surname,
-            yeargroup: student.Yeargroup,
-            code: student.Code,
-            _house: house}, function(err2, nStudent){
-              if(err && success){
-                callback({success: false, reason: err2});
-                success = false;
-              }
-            });
-        }
+  House.findOne({_id: house}, function(err5, housedata) {
+      if (err5 && success) {
+          callback({success: false, reason: err1});
+          success = false;
       }
-    });
+      Location.findOne({_id: housedata.config.DEFAULT_LOCATION}, function (err6, location) {
+          if (err6 && success) {
+              callback({success: false, reason: err1});
+              success = false;
+          }
+          var defaultLocation = {
+              id: location._id,
+              colour: location.colour,
+              name: location.name
+          };
+          json.forEach(function (student) {
+              Student.find({code: student.Code}, function (err, docs) {
+                  if (err && success) {
+                      callback({success: false, reason: err1});
+                      success = false;
+                  }
+                  else if (!docs.length) {
+                      if (student.Password !== "") {
+                          bcrypt.hash(student.Password, saltRounds, function (err1, hash) {
+                              if (err1 && success) {
+                                  callback({success: false, reason: err1});
+                                  success = false;
+                              }
+                              else {
+                                  var newStudent = Student.create({
+                                      firstname: student.Firstname,
+                                      surname: student.Surname,
+                                      yeargroup: student.Yeargroup,
+                                      code: student.Code,
+                                      _house: house,
+                                      password: hash,
+                                      location: defaultLocation,
+                                      timelastout: new Date()
+                                  }, function (err2, nStudent) {
+                                      if (err2 && success) {
+                                          callback({success: false, reason: err2});
+                                          success = false;
+                                      }
+                                  });
+                              }
+                          });
+                      } else {
+                          var newStudent = Student.create({
+                              firstname: student.Firstname,
+                              surname: student.Surname,
+                              yeargroup: student.Yeargroup,
+                              code: student.Code,
+                              _house: house,
+                              location: defaultLocation,
+                              timelastout: new Date()
+                          }, function (err2, nStudent) {
+                              if (err2 && success) {
+                                  callback({success: false, reason: err2});
+                                  success = false;
+                              }
+                          });
+                      }
+                  } else {
+                      if (student.Password !== "") {
+                          bcrypt.hash(student.Password, saltRounds, function (err1, hash) {
+                              if (err && success) {
+                                  callback({success: false, reason: err1});
+                                  success = false;
+                              }
+                              else {
+                                  var newStudent = Student.update({code: student.Code}, {
+                                      firstname: student.Firstname,
+                                      surname: student.Surname,
+                                      yeargroup: student.Yeargroup,
+                                      code: student.Code,
+                                      _house: house,
+                                      password: hash
+                                  }, function (err2, nStudent) {
+                                      if (err && success) {
+                                          callback({success: false, reason: err2});
+                                          success = false;
+                                      }
+                                  });
+                              }
+                          });
+                      } else {
+                          var newStudent = Student.update({code: student.Code}, {
+                              firstname: student.Firstname,
+                              surname: student.Surname,
+                              yeargroup: student.Yeargroup,
+                              code: student.Code,
+                              _house: house
+                          }, function (err2, nStudent) {
+                              if (err && success) {
+                                  callback({success: false, reason: err2});
+                                  success = false;
+                              }
+                          });
+                      }
+                  }
+              });
+          });
+      });
   });
   if(success){
     callback({success: success});
@@ -430,7 +450,7 @@ module.exports.createLocation = function(location, callback){
 module.exports.readLocations = function(house, callback){
   Location.find({
     "_house": house
-  }, function(err, locations) {
+  },{}, {sort: {heading: 1, order: 1}}, function(err, locations) {
     if (err) {
       callback({success: false, reason: err.message});
     } else {

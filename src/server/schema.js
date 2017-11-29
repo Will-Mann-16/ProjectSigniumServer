@@ -24,7 +24,8 @@ var locationSchema = mongoose.Schema({
     name: String,
     heading: String,
     colour: String,
-    _house: String
+    _house: String,
+    order: Number
 });
 
 var userSchema = mongoose.Schema({
