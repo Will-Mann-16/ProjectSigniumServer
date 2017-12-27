@@ -54,14 +54,14 @@ var houseSchema = mongoose.Schema({
 
 var historySchema = mongoose.Schema({
     student: {
-      _id: String,
-      firstname: String,
-      surname: String,
-      yeargroup: String
+        _id: String,
+        firstname: String,
+        surname: String,
+        yeargroup: String
     },
     location: {
-      _id: String,
-      name: String
+        _id: String,
+        name: String
     },
     _house: String,
     time: {type: Date, default: Date.now}

@@ -2,7 +2,6 @@ var express = require('express');
 var crud = require("./crud");
 
 
-
 var apiRoutes = express.Router();
 var studentRoutes = express.Router();
 var userRoutes = express.Router();
@@ -11,7 +10,7 @@ var houseRoutes = express.Router();
 var historyRoutes = express.Router();
 var calloverRoutes = express.Router();
 
-userRoutes.post("/create", function(req, res) {
+userRoutes.post("/create", function (req, res) {
     var user = {
         username: req.body.params.user.username.toLowerCase(),
         password: req.body.params.user.password,
@@ -20,139 +19,139 @@ userRoutes.post("/create", function(req, res) {
         firstname: req.body.params.user.firstname,
         surname: req.body.params.user.surname
     }
-    crud.createUser(user, function(response){
+    crud.createUser(user, function (response) {
         res.json(response);
     });
 });
-userRoutes.post("/read", function(req, res) {
+userRoutes.post("/read", function (req, res) {
     var jwt_key = req.body.params.jwt;
-    crud.readUser(jwt_key, function(response){
+    crud.readUser(jwt_key, function (response) {
         res.json(response);
     });
 });
-userRoutes.post("/update", function(req, res) {
-    crud.updateUser(req.body.params.id, req.body.params.user, function(response){
+userRoutes.post("/update", function (req, res) {
+    crud.updateUser(req.body.params.id, req.body.params.user, function (response) {
         res.json(response);
     });
 });
 
-userRoutes.get("/delete", function(req, res) {
-    crud.deleteUser(req.query.id, function(response){
+userRoutes.get("/delete", function (req, res) {
+    crud.deleteUser(req.query.id, function (response) {
         res.json(response);
     });
 });
-userRoutes.post("/authenticate", function(req, res) {
+userRoutes.post("/authenticate", function (req, res) {
     var username = req.body.params.username.toLowerCase();
     var password = req.body.params.password;
-    crud.authenticateUser(username, password, function(response){
+    crud.authenticateUser(username, password, function (response) {
         res.json(response);
     });
 });
 
 
-studentRoutes.post("/create", function(req, res) {
-    crud.createStudent(req.body.params.student, function(response){
+studentRoutes.post("/create", function (req, res) {
+    crud.createStudent(req.body.params.student, function (response) {
         res.json(response);
     });
 });
 
-studentRoutes.get("/read", function(req, res) {
+studentRoutes.get("/read", function (req, res) {
     var minor = req.query.minor;
     var house = req.query.house;
-    crud.readStudents(minor, house, function(response){
+    crud.readStudents(minor, house, function (response) {
         res.json(response);
     });
 });
 
-studentRoutes.post("/update", function(req, res) {
-    crud.updateStudent(req.body.params.id, req.body.params.student, function(response){
+studentRoutes.post("/update", function (req, res) {
+    crud.updateStudent(req.body.params.id, req.body.params.student, function (response) {
         res.json(response);
     });
 });
 
-studentRoutes.get("/update-location", function(req, res) {
-    crud.updateStudentLocation(req.query.ids, JSON.parse(req.query.location), function(response){
+studentRoutes.get("/update-location", function (req, res) {
+    crud.updateStudentLocation(req.query.ids, JSON.parse(req.query.location), function (response) {
         res.json(response);
     }, crud.createHistory);
 });
 
-studentRoutes.get("/delete", function(req, res) {
-    crud.deleteStudent(req.query.id, function(response){
+studentRoutes.get("/delete", function (req, res) {
+    crud.deleteStudent(req.query.id, function (response) {
         res.json(response);
     });
 });
-studentRoutes.post("/upload", function(req, res) {
+studentRoutes.post("/upload", function (req, res) {
     var sent = false;
-    crud.uploadStudents(req.body.params.json, req.body.params.house, function(response){
-        if(!sent){
+    crud.uploadStudents(req.body.params.json, req.body.params.house, function (response) {
+        if (!sent) {
             res.json(response);
             sent = true;
         }
     });
 });
 
-locationRoutes.post("/create", function(req, res) {
-    crud.createLocation(req.body.params.location, function(response){
+locationRoutes.post("/create", function (req, res) {
+    crud.createLocation(req.body.params.location, function (response) {
         res.json(response);
     });
 });
-locationRoutes.get("/read", function(req, res) {
-    crud.readLocations(req.query.house, function(response){
+locationRoutes.get("/read", function (req, res) {
+    crud.readLocations(req.query.house, function (response) {
         res.json(response);
     });
 });
-locationRoutes.post("/update", function(req, res) {
-    crud.updateLocation(req.body.params.id, req.body.params.location, function(response){
+locationRoutes.post("/update", function (req, res) {
+    crud.updateLocation(req.body.params.id, req.body.params.location, function (response) {
         res.json(response);
     });
 });
-locationRoutes.get("/delete", function(req, res) {
-    crud.deleteLocation(req.query.id, function(response){
-        res.json(response);
-    });
-});
-
-houseRoutes.post("/create", function(req, res) {
-    crud.createHouse(req.body.params.house, function(response){
-        res.json(response);
-    });
-});
-houseRoutes.get("/read", function(req, res) {
-    crud.readHouses(function(response){
-        res.json(response);
-    });
-});
-houseRoutes.post("/update", function(req, res) {
-    crud.updateHouse(req.body.params.id, req.body.params.house, function(response){
-        res.json(response);
-    });
-});
-houseRoutes.get("/delete", function(req, res) {
-    crud.deleteHouse(req.query.id, function(response){
-        res.json(response);
-    });
-});
-houseRoutes.post("/update-config", function(req, res){
-   crud.updateHouseConfig(req.body.params.house, req.body.params.config, function(response){
-      res.json(response);
-   });
-});
-
-historyRoutes.get("/read", function(req, res){
-    crud.readHistory(req.query.filter, req.query.amount, req.query.house, function(response){
+locationRoutes.get("/delete", function (req, res) {
+    crud.deleteLocation(req.query.id, function (response) {
         res.json(response);
     });
 });
 
-calloverRoutes.post("/create", function(req,res){
-    crud.createCallover(req.body.params.callover, function(response){
+houseRoutes.post("/create", function (req, res) {
+    crud.createHouse(req.body.params.house, function (response) {
+        res.json(response);
+    });
+});
+houseRoutes.get("/read", function (req, res) {
+    crud.readHouses(function (response) {
+        res.json(response);
+    });
+});
+houseRoutes.post("/update", function (req, res) {
+    crud.updateHouse(req.body.params.id, req.body.params.house, function (response) {
+        res.json(response);
+    });
+});
+houseRoutes.get("/delete", function (req, res) {
+    crud.deleteHouse(req.query.id, function (response) {
+        res.json(response);
+    });
+});
+houseRoutes.post("/update-config", function (req, res) {
+    crud.updateHouseConfig(req.body.params.house, req.body.params.config, function (response) {
+        res.json(response);
+    });
+});
+
+historyRoutes.get("/read", function (req, res) {
+    crud.readHistory(req.query.filter, req.query.amount, req.query.house, function (response) {
+        res.json(response);
+    });
+});
+
+calloverRoutes.post("/create", function (req, res) {
+    crud.createCallover(req.body.params.callover, function (response) {
         res.json(response);
     });
 })
-calloverRoutes.get("/read", function(req, res){
-   crud.readCallover(req.query.house, function(response){
-       res.json(response);
-   })
+calloverRoutes.get("/read", function (req, res) {
+    crud.readCallover(req.query.house, function (response) {
+        res.json(response);
+    })
 });
 
 apiRoutes.use('/students', studentRoutes);
