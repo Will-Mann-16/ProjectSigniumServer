@@ -4,6 +4,7 @@ var app = express();
 var http = require("http");
 var server = http.createServer(app);
 var io = require('socket.io')(server);
+var verifyTokenApp = require("./auth").verifyTokenApp;
 
 //var uri = 'mongodb://127.0.0.1:27017';
 var uri = 'mongodb://127.0.0.1:27017/project-signium'
@@ -17,7 +18,7 @@ var db = mongoose.connection;
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, X-Access-Token");
     next();
 });
 
@@ -51,34 +52,90 @@ io.on("connect", function (socket) {
 
     });
     socket.on("socket-client-server-app-authenticate", function (packet) {
-        crud.appAuthenticateStudent(packet.username, packet.password, function (response) {
-            socket.emit("socket-server-client-app-authenticate", response);
-        });
+                crud.appAuthenticateStudent(packet.username, packet.password, function (response) {
+                    socket.emit("socket-server-client-app-authenticate", response);
+                });
     });
     socket.on("socket-client-server-app-read-token", function (packet) {
-        crud.appReadStudentToken(packet.token, function (response) {
-            socket.emit("socket-server-client-app-read-token", response);
+        verifyTokenApp(packet, function(res){
+            if(res.success){
+                crud.appReadStudentToken(packet.token, function (response) {
+                    socket.emit("socket-server-client-app-read-token", response);
+                });
+            }
+            else{
+                socket.emit("socket-server-client-app-read-token", res);
+
+            }
         });
+
     });
     socket.on("socket-client-server-app-read-major", function (packet) {
-        crud.appReadStudent(packet.id, false, function (response) {
-            socket.emit("socket-server-client-app-read-major", response);
+        verifyTokenApp(packet, function(res){
+            if(res.success){
+                crud.appReadStudent(packet.id, false, function (response) {
+                    socket.emit("socket-server-client-app-read-major", response);
+                });
+            }
+            else{
+                socket.emit("socket-server-client-app-read-major", res);
+            }
         });
+
     });
     socket.on("socket-client-server-app-read-minor", function (packet) {
-        crud.appReadStudent(packet.id, true, function (response) {
-            socket.emit("socket-server-client-app-read-minor", response);
+        verifyTokenApp(packet, function(res){
+            if(res.success){
+                crud.appReadStudent(packet.id, true, function (response) {
+                    socket.emit("socket-server-client-app-read-minor", response);
+                });
+            }
+            else{
+                socket.emit("socket-server-client-app-read-minor", res);
+            }
         });
+
     });
     socket.on("socket-client-server-app-read-locations", function (packet) {
-        crud.readLocations(packet.house, function (response) {
-            socket.emit("socket-server-client-app-read-locations", response);
+        verifyTokenApp(packet, function(res){
+            if(res.success){
+                crud.readLocations(packet.house, function (response) {
+                    socket.emit("socket-server-client-app-read-locations", response);
+                });
+            }
+            else{
+                socket.emit("socket-server-client-app-read-locations", res);
+            }
         });
+
     });
     socket.on("socket-client-server-app-update-location", function (packet) {
-        crud.appUpdateStudentLocation(packet.studentID, packet.locationID, function (response) {
-            socket.emit("socket-server-client-app-update-location", response);
-        }, crud.createHistory);
+        verifyTokenApp(packet, function(res){
+            if(res.success){
+                crud.appUpdateStudentLocation(packet.studentID, packet.locationID, function (response) {
+                    socket.emit("socket-server-client-app-update-location", response);
+                }, crud.createHistory);
+            }
+            else{
+                socket.emit("socket-server-client-app-update-location", res);
+
+            }
+        });
+
+    });
+    socket.on("socket-client-server-app-get-house-config", function (packet) {
+        verifyTokenApp(packet, function(res){
+            if(res.success){
+                crud.appGetHouseConfig(packet.house, function (response) {
+                    socket.emit("socket-server-client-app-get-house-config", response);
+                });
+            }
+            else{
+                socket.emit("socket-server-client-app-get-house-config", res);
+
+            }
+        });
+
     });
 });
 
